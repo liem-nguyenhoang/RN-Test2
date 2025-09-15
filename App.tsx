@@ -1,23 +1,35 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { StatusBar, useColorScheme } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import {
+  createStaticNavigation,
+  useNavigation,
+} from '@react-navigation/native';
+import { Button } from '@react-navigation/elements';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import FittingListScreen from './features/fitting-operation-list/screens/FittingListScreen';
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+function HomeScreen() {
+  const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <FittingListScreen />
-    </SafeAreaView>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button onPress={() => navigation.navigate('Profile')}>
+        Go to Profile
+      </Button>
+    </View>
   );
 }
 
-export default App;
+const MyDrawer = createDrawerNavigator({
+  screens: {
+    Home: HomeScreen,
+    List: FittingListScreen,
+  },
+});
+
+const Navigation = createStaticNavigation(MyDrawer);
+
+export default function App() {
+  return <Navigation />;
+}
