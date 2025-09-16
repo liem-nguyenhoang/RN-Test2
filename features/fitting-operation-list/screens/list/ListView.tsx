@@ -40,6 +40,10 @@ export const FittingListScreen = () => {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
+  /** COMPANY (chỉ hiển thị, không filter) */
+  const [company, setCompany] = useState<string>('Company A');
+  const companyOptions = ['Company A', 'Company B', 'Company C'];
+
   // temp state (modal)
   const [tempShowFavorites, setTempShowFavorites] = useState(showFavorites);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
@@ -152,7 +156,6 @@ export const FittingListScreen = () => {
   const handleRefresh = () => {
     setRefreshing(true);
 
-    // ví dụ reset filter về mặc định
     setShowFavorites(false);
     setStatusFilter('All');
     setAreaFilter('All');
@@ -163,7 +166,7 @@ export const FittingListScreen = () => {
 
     setTimeout(() => {
       setPage(1);
-      setVisibleData(data.slice(0, 10)); // reload lại data gốc
+      setVisibleData(data.slice(0, 10));
       setRefreshing(false);
     }, 1000);
   };
@@ -221,10 +224,17 @@ export const FittingListScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Fitting List</Text>
+        {/* Dropdown chọn Company (chỉ hiển thị) */}
+        <DropdownSelect
+          label=""
+          options={companyOptions}
+          value={company}
+          onChange={setCompany}
+          style={{ flex: 1, marginRight: 10 }}
+        />
+
         {multiSelectMode ? (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {/* Select All */}
             <TouchableOpacity
               onPress={toggleSelectAll}
               style={{ marginRight: 15 }}
@@ -235,7 +245,6 @@ export const FittingListScreen = () => {
                 color="#007BFF"
               />
             </TouchableOpacity>
-            {/* Cancel */}
             <TouchableOpacity onPress={exitMultiSelect}>
               <Text style={{ color: 'red' }}>Cancel ({selectedIds.size})</Text>
             </TouchableOpacity>
@@ -290,7 +299,6 @@ export const FittingListScreen = () => {
             />
           ) : null
         }
-        // 👇 Pull to refresh
         refreshing={refreshing}
         onRefresh={handleRefresh}
       />
@@ -389,7 +397,7 @@ export const FittingListScreen = () => {
                             setTempSortField(
                               val === 'None' ? null : (val as SortField),
                             );
-                            setTempSortOrder(null); // reset order
+                            setTempSortOrder(null);
                           }}
                         />
                         <DropdownSelect
@@ -439,7 +447,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  headerTitle: { fontSize: 20, fontWeight: 'bold' },
   filterButton: { padding: 8, borderRadius: 6, backgroundColor: '#eee' },
   filterButtonActive: { backgroundColor: '#007BFF' },
   separator: { height: 10 },

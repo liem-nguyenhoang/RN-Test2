@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-toast-message';
 import { Fitting } from '../types/fitting';
 
 type SortField =
@@ -15,8 +17,8 @@ type Props = {
   selected: boolean;
   onToggleFavorite: (id: string) => void;
   sortField: SortField;
-  showCheckbox: boolean; // hiện checkbox khi multiSelectMode = true
-  onLongPress: (id: string) => void; // nhấn giữ để bật chọn nhiều
+  showCheckbox: boolean;
+  onLongPress: (id: string) => void;
 };
 
 export const FittingItem = ({
@@ -29,11 +31,29 @@ export const FittingItem = ({
   onLongPress,
 }: Props) => {
   const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const extraFieldMap: Record<string, string> = {
     fittingPermissionName: `Permission: ${item.fittingPermissionName}`,
     stationBuildingName: `Building: ${item.stationBuildingName}`,
     detailLocation: `Location: ${item.detailLocation}`,
+  };
+
+  const handleCopy = (text: string) => {
+    Clipboard.setString(text);
+    setCopied(true);
+
+    // Hiện toast
+    Toast.show({
+      type: 'success',
+      text1: 'Copied!',
+      text2: `DeviceID ${text} đã được copy vào clipboard.`,
+      position: 'bottom',
+      visibilityTime: 1500,
+    });
+
+    // Reset icon sau 1.5s
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -45,13 +65,11 @@ export const FittingItem = ({
         if (showCheckbox) {
           onSelect(item.deviceId);
         } else {
-          // setExpanded(!expanded);
           // TODO: navigate to detail
         }
       }}
     >
       <View style={styles.header}>
-        {/* Checkbox */}
         {showCheckbox && (
           <TouchableOpacity
             onPress={() => onSelect(item.deviceId)}
@@ -65,7 +83,6 @@ export const FittingItem = ({
           </TouchableOpacity>
         )}
 
-        {/* Bookmark */}
         <TouchableOpacity onPress={() => onToggleFavorite(item.deviceId)}>
           <Icon
             name={item.isfavorite ? 'bookmark' : 'bookmark-border'}
@@ -74,7 +91,6 @@ export const FittingItem = ({
           />
         </TouchableOpacity>
 
-        {/* Expand/Collapse */}
         <TouchableOpacity onPress={() => setExpanded(!expanded)}>
           <Icon
             name={expanded ? 'expand-less' : 'expand-more'}
@@ -84,17 +100,25 @@ export const FittingItem = ({
         </TouchableOpacity>
       </View>
 
-      {/* Always show deviceId + fittingId */}
-      <Text style={styles.title}>
-        DeviceID: {item.deviceId} | FittingID: {item.fittingId}
-      </Text>
+      {/* DeviceID + copy icon */}
+      <View style={styles.row}>
+        <Text style={styles.title}>
+          DeviceID: {item.deviceId} | FittingID: {item.fittingId}
+        </Text>
+        <TouchableOpacity onPress={() => handleCopy(item.deviceId)}>
+          <Icon
+            name={copied ? 'check' : 'content-copy'}
+            size={20}
+            color={copied ? 'green' : '#555'}
+            style={styles.copyIcon}
+          />
+        </TouchableOpacity>
+      </View>
 
-      {/* Show sort field */}
       {sortField && (
         <Text style={styles.sortFieldText}>{extraFieldMap[sortField]}</Text>
       )}
 
-      {/* Expanded info */}
       {expanded && (
         <>
           <Text>名前: {item.fittingName}</Text>
@@ -130,13 +154,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     gap: 10,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  copyIcon: {
+    marginLeft: 8,
+  },
   checkbox: {
     marginRight: 'auto',
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   sortFieldText: {
     fontSize: 14,
