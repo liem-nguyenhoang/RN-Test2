@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   createStaticNavigation,
   useNavigation,
@@ -18,6 +25,7 @@ import {
   Switch,
   Animated,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -26,17 +34,23 @@ import { DropdownSelect } from './features/fitting-operation-list/components/Dro
 import data from './features/fitting-operation-list/mocks/list-operation.json';
 import { Fitting } from './features/fitting-operation-list/types/fitting';
 
-type SortField =
+/* =========================
+ * Types
+ * =======================*/
+export type SortField =
   | 'fittingPermissionName'
   | 'stationBuildingName'
   | 'detailLocation'
   | null;
-type SortOrder = 'asc' | 'desc' | null;
+export type SortOrder = 'asc' | 'desc' | null;
 
+/* =========================
+ * Main Screen
+ * =======================*/
 export const FittingListScreen = () => {
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const navigation = useNavigation<any>();
 
-  /** FILTER + SORT STATE */
+  /** ---------- Filter & Sort State ---------- */
   const [showFavorites, setShowFavorites] = useState(false);
   const [statusFilter, setStatusFilter] = useState<
     'All' | 'Opening' | 'Closing'
@@ -49,11 +63,15 @@ export const FittingListScreen = () => {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
-  /** COMPANY (chỉ hiển thị, không filter) */
+  /** ---------- Company (display-only) ---------- */
   const [company, setCompany] = useState<string>('Company A');
-  const companyOptions = ['Company A', 'Company B', 'Company C'];
+  const companyOptions = useMemo(
+    () => ['Company A', 'Company B', 'Company C'],
+    [],
+  );
 
-  // temp state (modal)
+  /** ---------- Filter Modal (temp state) ---------- */
+  const [modalVisible, setModalVisible] = useState(false);
   const [tempShowFavorites, setTempShowFavorites] = useState(showFavorites);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
   const [tempAreaFilter, setTempAreaFilter] = useState(areaFilter);
@@ -63,49 +81,25 @@ export const FittingListScreen = () => {
   const [tempSortField, setTempSortField] = useState<SortField>(sortField);
   const [tempSortOrder, setTempSortOrder] = useState<SortOrder>(sortOrder);
 
-  /** MULTI-SELECT STATE */
-  const [multiSelectMode, setMultiSelectMode] = useState(false);
+  /** ---------- Selection (long-press) ---------- */
+  const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [selectAll, setSelectAll] = useState(false);
+  const [moreMenuVisible, setMoreMenuVisible] = useState(false);
 
-  const handleSelect = (id: string) => {
+  const toggleSelect = (id: string) => {
     setSelectedIds(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
     });
-    setSelectAll(false);
   };
 
-  const handleLongPress = (id: string) => {
-    if (!multiSelectMode) {
-      setMultiSelectMode(true);
-      setSelectedIds(new Set([id]));
-      setSelectAll(false);
-    }
+  const startSelection = (id: string) => {
+    setSelectedIds(new Set([id]));
+    setSelectionMode(true);
   };
 
-  const toggleSelectAll = () => {
-    if (selectAll) {
-      setSelectedIds(new Set());
-      setSelectAll(false);
-    } else {
-      setSelectedIds(new Set(visibleData.map(f => f.deviceId)));
-      setSelectAll(true);
-    }
-  };
-
-  const exitMultiSelect = () => {
-    setMultiSelectMode(false);
-    setSelectedIds(new Set());
-    setSelectAll(false);
-  };
-
-  /** FILTER + SORT DATA */
+  /** ---------- Derived Data (filter + sort) ---------- */
   const filteredData = useMemo(() => {
     return data.filter(f => {
       if (showFavorites && f.isfavorite !== 1) return false;
@@ -126,27 +120,41 @@ export const FittingListScreen = () => {
   ]);
 
   const sortedData = useMemo(() => {
-    let result = [...filteredData];
-    if (sortField && sortOrder) {
-      result.sort((a, b) => {
-        const valA = a[sortField] ?? '';
-        const valB = b[sortField] ?? '';
-        if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-        if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-    return result;
+    if (!sortField || !sortOrder) return filteredData;
+    const copy = [...filteredData];
+    copy.sort((a, b) => {
+      const A = (a[sortField] ?? '') as string;
+      const B = (b[sortField] ?? '') as string;
+      if (A < B) return sortOrder === 'asc' ? -1 : 1;
+      if (A > B) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return copy;
   }, [filteredData, sortField, sortOrder]);
 
-  /** LAZY LOAD */
+  /** ---------- Lazy Load ---------- */
+  const PAGE_SIZE = 10;
   const [visibleData, setVisibleData] = useState<Fitting[]>([]);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const selectAllOnPage = useCallback(() => {
+    setSelectedIds(
+      selectedIds.size === visibleData.length
+        ? new Set()
+        : new Set(visibleData.map(f => f.deviceId)),
+    );
+  }, [selectedIds.size, visibleData]);
+
+  const exitSelection = useCallback(() => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+    setMoreMenuVisible(false);
+  }, []);
+
   useEffect(() => {
     setPage(1);
-    setVisibleData(sortedData.slice(0, 10));
+    setVisibleData(sortedData.slice(0, PAGE_SIZE));
   }, [sortedData]);
 
   const loadMore = () => {
@@ -154,17 +162,26 @@ export const FittingListScreen = () => {
     setLoadingMore(true);
     setTimeout(() => {
       const nextPage = page + 1;
-      setVisibleData(sortedData.slice(0, nextPage * 10));
+      setVisibleData(sortedData.slice(0, nextPage * PAGE_SIZE));
       setPage(nextPage);
       setLoadingMore(false);
     }, 600);
   };
 
-  /** PULL TO REFRESH */
-  const [refreshing, setRefreshing] = useState(false);
-  const handleRefresh = () => {
-    setRefreshing(true);
+  /** ---------- Toggle Favorite ---------- */
+  const toggleFavorite = (id: string) => {
+    setVisibleData(prev =>
+      prev.map(item =>
+        item.deviceId === id
+          ? { ...item, isfavorite: item.isfavorite ? 0 : 1 }
+          : item,
+      ),
+    );
+  };
 
+  /** ---------- Pull to Refresh ---------- */
+  const [refreshing, setRefreshing] = useState(false);
+  const resetFilters = () => {
     setShowFavorites(false);
     setStatusFilter('All');
     setAreaFilter('All');
@@ -172,16 +189,20 @@ export const FittingListScreen = () => {
     setFittingTypeFilter('All');
     setSortField(null);
     setSortOrder(null);
+  };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    resetFilters();
     setTimeout(() => {
       setPage(1);
-      setVisibleData(data.slice(0, 10));
+      setVisibleData(data.slice(0, PAGE_SIZE));
       setRefreshing(false);
     }, 1000);
   };
 
-  /** MODAL APPLY */
-  const handleApply = () => {
+  /** ---------- Apply Modal ---------- */
+  const applyModal = () => {
     setShowFavorites(tempShowFavorites);
     setStatusFilter(tempStatusFilter);
     setAreaFilter(tempAreaFilter);
@@ -192,7 +213,7 @@ export const FittingListScreen = () => {
     setModalVisible(false);
   };
 
-  const resetTemp = () => {
+  const syncTempFromMain = useCallback(() => {
     setTempShowFavorites(showFavorites);
     setTempStatusFilter(statusFilter);
     setTempAreaFilter(areaFilter);
@@ -200,19 +221,20 @@ export const FittingListScreen = () => {
     setTempFittingTypeFilter(fittingTypeFilter);
     setTempSortField(sortField);
     setTempSortOrder(sortOrder);
-  };
+  }, [
+    areaFilter,
+    buildingFilter,
+    fittingTypeFilter,
+    showFavorites,
+    sortField,
+    sortOrder,
+    statusFilter,
+  ]);
 
-  const areaOptions = ['All', ...Array.from(new Set(data.map(f => f.area)))];
-  const buildingOptions = [
-    'All',
-    ...Array.from(new Set(data.map(f => f.stationBuildingName))),
-  ];
-
-  /** SCROLL TO TOP */
+  /** ---------- Scroll To Top ---------- */
   const listRef = useRef<FlatList<Fitting>>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const handleScroll = (e: any) => {
+  const onScroll = (e: any) => {
     const y = e.nativeEvent.contentOffset.y;
     Animated.timing(fadeAnim, {
       toValue: y > 200 ? 1 : 0,
@@ -221,7 +243,8 @@ export const FittingListScreen = () => {
     }).start();
   };
 
-  const hasFilter =
+  /** ---------- Header Config ---------- */
+  const hasFilterApplied =
     showFavorites ||
     statusFilter !== 'All' ||
     areaFilter !== 'All' ||
@@ -229,73 +252,106 @@ export const FittingListScreen = () => {
     fittingTypeFilter !== 'All' ||
     sortField !== null;
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        {/* Dropdown chọn Company (chỉ hiển thị) */}
-        <DropdownSelect
-          label=""
-          options={companyOptions}
-          value={company}
-          onChange={setCompany}
-          style={{ flex: 1, marginRight: 10 }}
-        />
+  const renderHeaderTitleSelect = useCallback(
+    () => <Text style={styles.headerTitle}>{selectedIds.size} selected</Text>,
+    [selectedIds.size],
+  );
 
-        {multiSelectMode ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity
-              onPress={toggleSelectAll}
-              style={{ marginRight: 15 }}
-            >
-              <Icon
-                name={selectAll ? 'check-box' : 'check-box-outline-blank'}
-                size={24}
-                color="#007BFF"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={exitMultiSelect}>
-              <Text style={{ color: 'red' }}>Cancel ({selectedIds.size})</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            onPress={() => {
-              resetTemp();
-              setModalVisible(true);
-            }}
-            style={[
-              styles.filterButton,
-              hasFilter && styles.filterButtonActive,
-            ]}
-          >
-            <Icon
-              name="filter-list"
-              size={24}
-              color={hasFilter ? '#fff' : '#333'}
-            />
+  const renderHeaderRightSelect = useCallback(
+    () => (
+      <View style={styles.headerRight}>
+        <TouchableOpacity onPress={exitSelection} style={styles.headerBtn}>
+          <Text style={styles.dangerText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={selectAllOnPage} style={styles.headerBtn}>
+          <Text style={styles.primaryText}>Select All</Text>
+        </TouchableOpacity>
+        {selectedIds.size > 0 && (
+          <TouchableOpacity onPress={() => setMoreMenuVisible(true)}>
+            <Icon name="more-vert" size={24} color="#333" />
           </TouchableOpacity>
         )}
       </View>
+    ),
+    [exitSelection, selectAllOnPage, selectedIds.size],
+  );
 
-      {/* List */}
+  const renderHeaderTitle = useCallback(
+    () => (
+      <DropdownSelect
+        label=""
+        options={companyOptions}
+        value={company}
+        onChange={setCompany}
+        style={{ width: 120 }}
+      />
+    ),
+    [company, companyOptions],
+  );
+
+  const renderHeaderRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => {
+          syncTempFromMain();
+          setModalVisible(true);
+        }}
+        style={[styles.filterBtn, hasFilterApplied && styles.filterBtnActive]}
+      >
+        <Icon
+          name="filter-list"
+          size={24}
+          color={hasFilterApplied ? '#fff' : '#333'}
+        />
+      </TouchableOpacity>
+    ),
+    [syncTempFromMain, hasFilterApplied],
+  );
+  useLayoutEffect(() => {
+    if (selectionMode) {
+      navigation.setOptions({
+        headerTitle: renderHeaderTitleSelect,
+        headerRight: renderHeaderRightSelect,
+      });
+    } else {
+      navigation.setOptions({
+        headerTitle: renderHeaderTitle,
+        headerRight: renderHeaderRight,
+      });
+    }
+  }, [
+    selectionMode,
+    navigation,
+    renderHeaderTitleSelect,
+    renderHeaderRightSelect,
+    renderHeaderTitle,
+    renderHeaderRight,
+  ]);
+
+  /** ---------- Render Helpers ---------- */
+  const renderListItem = ({ item }: { item: Fitting }) => (
+    <FittingItem
+      item={item}
+      sortField={sortField}
+      selected={selectedIds.has(item.deviceId)}
+      showCheckbox={selectionMode}
+      onSelect={toggleSelect}
+      onToggleFavorite={toggleFavorite}
+      onLongPress={startSelection}
+    />
+  );
+
+  const renderSeparator = () => <View style={styles.separator} />;
+
+  return (
+    <View style={styles.container}>
       <FlatList
         ref={listRef}
         data={visibleData}
         keyExtractor={item => item.deviceId}
-        renderItem={({ item }) => (
-          <FittingItem
-            item={item}
-            sortField={sortField}
-            selected={selectedIds.has(item.deviceId)}
-            showCheckbox={multiSelectMode}
-            onSelect={handleSelect}
-            onToggleFavorite={() => {}}
-            onLongPress={handleLongPress}
-          />
-        )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        onScroll={handleScroll}
+        renderItem={renderListItem}
+        ItemSeparatorComponent={renderSeparator}
+        onScroll={onScroll}
         scrollEventThrottle={16}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
@@ -304,16 +360,16 @@ export const FittingListScreen = () => {
             <ActivityIndicator
               size="large"
               color="#007BFF"
-              style={{ margin: 20 }}
+              style={styles.footerLoading}
             />
           ) : null
         }
         refreshing={refreshing}
-        onRefresh={handleRefresh}
+        onRefresh={onRefresh}
       />
 
-      {/* Scroll To Top */}
-      <Animated.View style={[styles.scrollTopButton, { opacity: fadeAnim }]}>
+      {/* Scroll-to-top FAB */}
+      <Animated.View style={[styles.scrollTopBtn, { opacity: fadeAnim }]}>
         <TouchableOpacity
           onPress={() =>
             listRef.current?.scrollToOffset({ offset: 0, animated: true })
@@ -323,143 +379,282 @@ export const FittingListScreen = () => {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Modal Filter */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filter Options</Text>
+      {/* ✅ Modal Components tách ra ngoài */}
+      <FilterModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onApply={applyModal}
+        tempShowFavorites={tempShowFavorites}
+        setTempShowFavorites={setTempShowFavorites}
+        tempStatusFilter={tempStatusFilter}
+        setTempStatusFilter={setTempStatusFilter}
+        tempAreaFilter={tempAreaFilter}
+        setTempAreaFilter={setTempAreaFilter}
+        tempBuildingFilter={tempBuildingFilter}
+        setTempBuildingFilter={setTempBuildingFilter}
+        tempFittingTypeFilter={tempFittingTypeFilter}
+        setTempFittingTypeFilter={setTempFittingTypeFilter}
+        tempSortField={tempSortField}
+        setTempSortField={setTempSortField}
+        tempSortOrder={tempSortOrder}
+        setTempSortOrder={setTempSortOrder}
+        resetTempFilters={resetFilters}
+      />
 
-            <FlatList
-              data={[
-                { type: 'favorites' },
-                { type: 'status' },
-                { type: 'area' },
-                { type: 'building' },
-                { type: 'fittingType' },
-                { type: 'sort' },
-              ]}
-              keyExtractor={(_, idx) => idx.toString()}
-              renderItem={({ item }) => {
-                switch (item.type) {
-                  case 'favorites':
-                    return (
-                      <View style={styles.row}>
-                        <Text style={styles.label}>Only Favorites</Text>
-                        <Switch
-                          value={tempShowFavorites}
-                          onValueChange={setTempShowFavorites}
-                        />
-                      </View>
-                    );
-                  case 'status':
-                    return (
-                      <DropdownSelect
-                        label="Status"
-                        options={['All', 'Opening', 'Closing']}
-                        value={tempStatusFilter}
-                        onChange={setTempStatusFilter}
-                      />
-                    );
-                  case 'area':
-                    return (
-                      <DropdownSelect
-                        label="Area"
-                        options={areaOptions}
-                        value={tempAreaFilter}
-                        onChange={setTempAreaFilter}
-                      />
-                    );
-                  case 'building':
-                    return (
-                      <DropdownSelect
-                        label="Building"
-                        options={buildingOptions}
-                        value={tempBuildingFilter}
-                        onChange={setTempBuildingFilter}
-                      />
-                    );
-                  case 'fittingType':
-                    return (
-                      <DropdownSelect
-                        label="Fitting Type"
-                        options={['All', 1, 2]}
-                        value={tempFittingTypeFilter}
-                        onChange={setTempFittingTypeFilter}
-                      />
-                    );
-                  case 'sort':
-                    return (
-                      <>
-                        <Text style={[styles.modalTitle, { marginTop: 10 }]}>
-                          Sort Options
-                        </Text>
-                        <DropdownSelect
-                          label="Sort By"
-                          options={[
-                            'None',
-                            'fittingPermissionName',
-                            'stationBuildingName',
-                            'detailLocation',
-                          ]}
-                          value={tempSortField ?? 'None'}
-                          onChange={val => {
-                            setTempSortField(
-                              val === 'None' ? null : (val as SortField),
-                            );
-                            setTempSortOrder(null);
-                          }}
-                        />
-                        <DropdownSelect
-                          label="Order"
-                          options={['None', 'asc', 'desc']}
-                          value={tempSortOrder ?? 'None'}
-                          onChange={val => {
-                            setTempSortOrder(
-                              val === 'None' ? null : (val as SortOrder),
-                            );
-                          }}
-                        />
-                      </>
-                    );
-                }
-              }}
-            />
-
-            {/* Actions */}
-            <View style={styles.actions}>
-              <TouchableOpacity
-                style={styles.actionCancel}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.actionText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.actionApply}
-                onPress={handleApply}
-              >
-                <Text style={styles.actionTextApply}>OK</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <MoreMenu
+        visible={moreMenuVisible}
+        onClose={() => setMoreMenuVisible(false)}
+        navigation={navigation}
+        selectedIds={selectedIds}
+      />
     </View>
   );
 };
 
-/* Styles */
+/* =========================
+ * FilterModal Component
+ * =======================*/
+type FilterModalProps = {
+  visible: boolean;
+  onClose: () => void;
+  onApply: () => void;
+  tempShowFavorites: boolean;
+  setTempShowFavorites: (v: boolean) => void;
+  tempStatusFilter: string;
+  setTempStatusFilter: (v: any) => void;
+  tempAreaFilter: string;
+  setTempAreaFilter: (v: any) => void;
+  tempBuildingFilter: string;
+  setTempBuildingFilter: (v: any) => void;
+  tempFittingTypeFilter: string | number;
+  setTempFittingTypeFilter: (v: any) => void;
+  tempSortField: SortField;
+  setTempSortField: (v: SortField | null) => void;
+  tempSortOrder: SortOrder;
+  setTempSortOrder: (v: SortOrder | null) => void;
+  resetTempFilters: () => void;
+};
+
+const FilterModal: React.FC<FilterModalProps> = ({
+  visible,
+  onClose,
+  onApply,
+  tempShowFavorites,
+  setTempShowFavorites,
+  tempStatusFilter,
+  setTempStatusFilter,
+  tempAreaFilter,
+  setTempAreaFilter,
+  tempBuildingFilter,
+  setTempBuildingFilter,
+  tempFittingTypeFilter,
+  setTempFittingTypeFilter,
+  tempSortField,
+  setTempSortField,
+  tempSortOrder,
+  setTempSortOrder,
+  resetTempFilters,
+}) => {
+  const areaOptions = ['All', ...Array.from(new Set(data.map(f => f.area)))];
+  const buildingOptions = [
+    'All',
+    ...Array.from(new Set(data.map(f => f.stationBuildingName))),
+  ];
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Filter Options</Text>
+
+          <FlatList
+            data={[
+              'favorites',
+              'status',
+              'area',
+              'building',
+              'fittingType',
+              'sort',
+            ]}
+            keyExtractor={(key, idx) => `${key}-${idx}`}
+            renderItem={({ item: key }) => {
+              switch (key) {
+                case 'favorites':
+                  return (
+                    <View style={styles.row}>
+                      <Text style={styles.label}>Only Favorites</Text>
+                      <Switch
+                        value={tempShowFavorites}
+                        onValueChange={setTempShowFavorites}
+                      />
+                    </View>
+                  );
+                case 'status':
+                  return (
+                    <DropdownSelect
+                      label="Status"
+                      options={['All', 'Opening', 'Closing']}
+                      value={tempStatusFilter}
+                      onChange={setTempStatusFilter}
+                    />
+                  );
+                case 'area':
+                  return (
+                    <DropdownSelect
+                      label="Area"
+                      options={areaOptions}
+                      value={tempAreaFilter}
+                      onChange={setTempAreaFilter}
+                    />
+                  );
+                case 'building':
+                  return (
+                    <DropdownSelect
+                      label="Building"
+                      options={buildingOptions}
+                      value={tempBuildingFilter}
+                      onChange={setTempBuildingFilter}
+                    />
+                  );
+                case 'fittingType':
+                  return (
+                    <DropdownSelect
+                      label="Fitting Type"
+                      options={['All', 1, 2]}
+                      value={tempFittingTypeFilter}
+                      onChange={setTempFittingTypeFilter}
+                    />
+                  );
+                case 'sort':
+                  return (
+                    <>
+                      <Text style={[styles.modalTitle, { marginTop: 10 }]}>
+                        Sort Options
+                      </Text>
+                      <DropdownSelect
+                        label="Sort By"
+                        options={[
+                          'None',
+                          'fittingPermissionName',
+                          'stationBuildingName',
+                          'detailLocation',
+                        ]}
+                        value={tempSortField ?? 'None'}
+                        onChange={val => {
+                          setTempSortField(
+                            val === 'None' ? null : (val as SortField),
+                          );
+                          setTempSortOrder(null);
+                        }}
+                      />
+                      <DropdownSelect
+                        label="Order"
+                        options={['None', 'asc', 'desc']}
+                        value={tempSortOrder ?? 'None'}
+                        onChange={val =>
+                          setTempSortOrder(
+                            val === 'None' ? null : (val as SortOrder),
+                          )
+                        }
+                      />
+                    </>
+                  );
+                default:
+                  return null; // ✅ fix: luôn trả về null
+              }
+            }}
+          />
+
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.actionCancel} onPress={onClose}>
+              <Text style={styles.actionText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionCancel, { marginRight: 15 }]}
+              onPress={resetTempFilters}
+            >
+              <Text style={[styles.actionText, { color: 'red' }]}>Reset</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionApply} onPress={onApply}>
+              <Text style={styles.actionTextApply}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+/* =========================
+ * MoreMenu Component
+ * =======================*/
+type MoreMenuProps = {
+  visible: boolean;
+  onClose: () => void;
+  navigation: any;
+  selectedIds: Set<string>;
+};
+
+const MoreMenu: React.FC<MoreMenuProps> = ({
+  visible,
+  onClose,
+  navigation,
+  selectedIds,
+}) => {
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <Pressable style={styles.moreOverlay} onPress={onClose}>
+        <View style={styles.moreMenu}>
+          <TouchableOpacity
+            style={styles.moreItem}
+            onPress={() => {
+              onClose();
+              navigation.navigate('Detail', { ids: [...selectedIds] });
+            }}
+          >
+            <Text style={styles.moreText}>Go to Detail</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.moreItem}
+            onPress={() => {
+              onClose();
+              navigation.navigate('History', { ids: [...selectedIds] });
+            }}
+          >
+            <Text style={styles.moreText}>Go to History</Text>
+          </TouchableOpacity>
+        </View>
+      </Pressable>
+    </Modal>
+  );
+};
+
+/* =========================
+ * Styles
+ * =======================*/
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F8F8', padding: 10 },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  filterButton: { padding: 8, borderRadius: 6, backgroundColor: '#eee' },
-  filterButtonActive: { backgroundColor: '#007BFF' },
   separator: { height: 10 },
-  scrollTopButton: {
+  footerLoading: { margin: 20 },
+
+  // Header
+  headerTitle: { fontSize: 16, fontWeight: '600' },
+  headerRight: { flexDirection: 'row', alignItems: 'center' },
+  headerBtn: { marginRight: 15 },
+  dangerText: { color: 'red' },
+  primaryText: { color: '#007BFF' },
+
+  // Filter button
+  filterBtn: { padding: 8, borderRadius: 6, backgroundColor: '#eee' },
+  filterBtnActive: { backgroundColor: '#007BFF' },
+
+  // Scroll to top
+  scrollTopBtn: {
     position: 'absolute',
     bottom: 30,
     right: 20,
@@ -468,6 +663,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     elevation: 5,
   },
+
+  // Modal common
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -499,11 +696,33 @@ const styles = StyleSheet.create({
   },
   actionText: { fontSize: 16, color: '#333' },
   actionTextApply: { fontSize: 16, color: '#fff', fontWeight: '600' },
+
+  // More menu
+  moreOverlay: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  moreMenu: {
+    marginTop: 50,
+    marginRight: 10,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  moreItem: { paddingHorizontal: 20, paddingVertical: 12 },
+  moreText: { fontSize: 16, color: '#333' },
 });
 
+/* =========================
+ * Other Screens & Navigation
+ * =======================*/
 function HomeScreen() {
-  const navigation = useNavigation();
-
+  const navigation = useNavigation<any>();
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
@@ -512,18 +731,34 @@ function HomeScreen() {
   );
 }
 
-const MyDrawer = createDrawerNavigator({
+function DetailScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Detail Screen</Text>
+    </View>
+  );
+}
+
+function HistoryScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>History Screen</Text>
+    </View>
+  );
+}
+
+const Drawer = createDrawerNavigator({
   screens: {
     Home: HomeScreen,
     List: FittingListScreen,
+    Detail: DetailScreen,
+    History: HistoryScreen,
   },
 });
-
-const Navigation = createStaticNavigation(MyDrawer);
+const Navigation = createStaticNavigation(Drawer);
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />

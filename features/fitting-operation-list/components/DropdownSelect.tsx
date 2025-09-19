@@ -6,6 +6,8 @@ import {
   Modal,
   FlatList,
   StyleSheet,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -15,6 +17,7 @@ type Props<T> = {
   value: T;
   onChange: (val: T) => void;
   maxHeight?: number;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function DropdownSelect<T extends string | number>({
@@ -23,11 +26,12 @@ export function DropdownSelect<T extends string | number>({
   value,
   onChange,
   maxHeight = 250,
+  style,
 }: Props<T>) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <View style={{ marginBottom: 15 }}>
+    <View style={[{ marginBottom: 15 }, style]}>
       {label && <Text style={styles.label}>{label}</Text>}
 
       {/* Ô hiển thị */}
