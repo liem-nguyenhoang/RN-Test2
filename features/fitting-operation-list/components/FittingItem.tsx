@@ -1,9 +1,11 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message';
 import { Fitting } from '../types/fitting';
+import { useNavigation } from '@react-navigation/native';
 
 type SortField =
   | 'fittingPermissionName'
@@ -30,7 +32,8 @@ export const FittingItem = ({
   showCheckbox,
   onLongPress,
 }: Props) => {
-  const [expanded, setExpanded] = useState(false);
+  const navigation = useNavigation();
+  const [expanded, setExpanded] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const extraFieldMap: Record<string, string> = {
@@ -44,18 +47,27 @@ export const FittingItem = ({
     setCopied(true);
 
     // Hiện toast
-    Toast.show({
-      type: 'success',
-      text1: 'Copied!',
-      text2: `DeviceID ${text} đã được copy vào clipboard.`,
-      position: 'bottom',
-      visibilityTime: 1500,
-    });
+    // Toast.show({
+    //   type: 'success',
+    //   text1: 'Copied!',
+    //   text2: `DeviceID ${text} đã được copy vào clipboard.`,
+    //   position: 'bottom',
+    //   visibilityTime: 1500,
+    // });
 
     // Reset icon sau 1.5s
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const permissions = ['フルコントロール', '権限付与', '開閉のみ'];
+
+  const fittingType = [
+    'シャッター',
+    'ドア(自動施錠あり)',
+    'ドア(自動施錠なし)',
+  ];
+
+  const fittingStatus = ['全開', '全閉', '中間', '開錠', '施錠'];
   return (
     <TouchableOpacity
       style={styles.card}
@@ -66,42 +78,87 @@ export const FittingItem = ({
           onSelect(item.deviceId);
         } else {
           // TODO: navigate to detail
+          // navigation.navigate('Detail');
         }
       }}
     >
-      <View style={styles.header}>
-        {showCheckbox && (
-          <TouchableOpacity
-            onPress={() => onSelect(item.deviceId)}
-            style={styles.checkbox}
+      <View style={[styles.header, { justifyContent: 'space-between' }]}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          {showCheckbox && (
+            <TouchableOpacity
+              onPress={() => onSelect(item.deviceId)}
+              style={styles.checkbox}
+            >
+              <Icon
+                name={selected ? 'check-box' : 'check-box-outline-blank'}
+                size={24}
+                color={selected ? '#007BFF' : '#999'}
+              />
+            </TouchableOpacity>
+          )}
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 4,
+            }}
           >
+            <Text style={[styles.title, { fontSize: 18 }]}>
+              {item.fittingId}
+            </Text>
+            <TouchableOpacity onPress={() => handleCopy(item.deviceId)}>
+              <Icon
+                name={copied ? 'check' : 'content-copy'}
+                size={16}
+                color={copied ? 'green' : '#555'}
+                style={styles.copyIcon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={[
+              styles.title,
+              { fontSize: 12, marginRight: 4, color: '#007BFF' },
+            ]}
+          >
+            {permissions[item.fittingPermissionName] ?? permissions[0]}
+          </Text>
+          <TouchableOpacity onPress={() => onToggleFavorite(item.deviceId)}>
             <Icon
-              name={selected ? 'check-box' : 'check-box-outline-blank'}
+              name={item.isfavorite ? 'bookmark' : 'bookmark-border'}
               size={24}
-              color={selected ? '#007BFF' : '#999'}
+              color={item.isfavorite ? 'orange' : '#999'}
             />
           </TouchableOpacity>
-        )}
+        </View>
 
-        <TouchableOpacity onPress={() => onToggleFavorite(item.deviceId)}>
-          <Icon
-            name={item.isfavorite ? 'bookmark' : 'bookmark-border'}
-            size={24}
-            color={item.isfavorite ? 'orange' : '#999'}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+        {/* <TouchableOpacity onPress={() => setExpanded(!expanded)}>
           <Icon
             name={expanded ? 'expand-less' : 'expand-more'}
             size={24}
             color="#333"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* DeviceID + copy icon */}
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <Text style={styles.title}>
           DeviceID: {item.deviceId} | FittingID: {item.fittingId}
         </Text>
@@ -113,24 +170,49 @@ export const FittingItem = ({
             style={styles.copyIcon}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {sortField && (
         <Text style={styles.sortFieldText}>{extraFieldMap[sortField]}</Text>
       )}
 
       {expanded && (
-        <>
-          <Text>名前: {item.fittingName}</Text>
-          <Text>エリア: {item.area}</Text>
-          <Text>位置: {item.detailLocation}</Text>
-          <Text>建物: {item.stationBuildingName}</Text>
-          <Text
+        <View style={{}}>
+          <View style={styles.rowText}>
+            <Text>建具記号</Text>
+            <Text>{item.fittingName}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>建具種類</Text>
+            <Text>{fittingType[item.fittingType]}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>通信機ID</Text>
+            <Text>{item.deviceId}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>建物名</Text>
+            <Text>{item.stationBuildingName}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>エリア</Text>
+            <Text>{item.area}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>詳細場所</Text>
+            <Text>{item.detailLocation}</Text>
+          </View>
+          <View style={styles.rowText}>
+            <Text>建具状態</Text>
+            <Text>{fittingStatus[item.status]}</Text>
+          </View>
+
+          {/* <Text
             style={item.status === 'Opening' ? styles.opening : styles.closing}
           >
             ステータス: {item.status}
-          </Text>
-        </>
+          </Text> */}
+        </View>
       )}
     </TouchableOpacity>
   );
@@ -145,7 +227,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    marginBottom: 10,
   },
   header: {
     flexDirection: 'row',
@@ -180,5 +261,11 @@ const styles = StyleSheet.create({
   closing: {
     color: 'red',
     fontWeight: '600',
+  },
+  rowText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

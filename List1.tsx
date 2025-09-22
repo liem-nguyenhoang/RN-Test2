@@ -23,9 +23,7 @@ import {
   useColorScheme,
   Text,
   Modal,
-  Switch,
   Animated,
-  ActivityIndicator,
   Pressable,
   TextInput,
   ScrollView,
@@ -38,7 +36,7 @@ import { DropdownSelect } from './features/fitting-operation-list/components/Dro
 import data from './features/fitting-operation-list/mocks/list-operation.json';
 import { Fitting } from './features/fitting-operation-list/types/fitting';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 /* =========================
  * Types
@@ -69,14 +67,14 @@ export const FittingListScreen = () => {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
-  /** ---------- Company (display-only) ---------- */
+  /** ---------- Company ---------- */
   const [company, setCompany] = useState<string>('株式会社さくら');
   const companyOptions = useMemo(
     () => ['株式会社さくら', '管理会社 1', '管理会社 2', '管理会社 3'],
     [],
   );
 
-  /** ---------- Filter Modal (temp state) ---------- */
+  /** ---------- Modal (temp) ---------- */
   const [modalVisible, setModalVisible] = useState(false);
   const [tempShowFavorites, setTempShowFavorites] = useState(showFavorites);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
@@ -87,7 +85,7 @@ export const FittingListScreen = () => {
   const [tempSortField, setTempSortField] = useState<SortField>(sortField);
   const [tempSortOrder, setTempSortOrder] = useState<SortOrder>(sortOrder);
 
-  /** ---------- Selection (long-press) ---------- */
+  /** ---------- Selection ---------- */
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [moreMenuVisible, setMoreMenuVisible] = useState(false);
@@ -138,11 +136,28 @@ export const FittingListScreen = () => {
     return copy;
   }, [filteredData, sortField, sortOrder]);
 
-  /** ---------- Lazy Load ---------- */
-  const PAGE_SIZE = 10;
-  const [visibleData, setVisibleData] = useState<Fitting[]>([]);
+  /** ---------- Paging ---------- */
+  const [pageSize, setPageSize] = useState<number>(20); // default 20
   const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const totalPages = Math.ceil(sortedData.length / pageSize);
+
+  useEffect(() => {
+    setPage(1); // reset khi filter/sort/pageSize thay đổi
+  }, [sortedData, pageSize]);
+
+  const visibleData = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    return sortedData.slice(start, end);
+  }, [page, pageSize, sortedData]);
+
+  const goNextPage = () => {
+    if (page < totalPages) setPage(p => p + 1);
+  };
+
+  const goPrevPage = () => {
+    if (page > 1) setPage(p => p - 1);
+  };
 
   const selectAllOnPage = useCallback(() => {
     setSelectedIds(
@@ -158,34 +173,12 @@ export const FittingListScreen = () => {
     setMoreMenuVisible(false);
   }, []);
 
-  useEffect(() => {
-    setPage(1);
-    setVisibleData(sortedData.slice(0, PAGE_SIZE));
-  }, [sortedData]);
-
-  const loadMore = () => {
-    if (loadingMore || visibleData.length >= sortedData.length) return;
-    setLoadingMore(true);
-    setTimeout(() => {
-      const nextPage = page + 1;
-      setVisibleData(sortedData.slice(0, nextPage * PAGE_SIZE));
-      setPage(nextPage);
-      setLoadingMore(false);
-    }, 600);
-  };
-
   /** ---------- Toggle Favorite ---------- */
   const toggleFavorite = (id: string) => {
-    setVisibleData(prev =>
-      prev.map(item =>
-        item.deviceId === id
-          ? { ...item, isfavorite: item.isfavorite ? 0 : 1 }
-          : item,
-      ),
-    );
+    setSelectedIds(prev => new Set(prev)); // force re-render
   };
 
-  /** ---------- Pull to Refresh ---------- */
+  /** ---------- Refresh ---------- */
   const [refreshing, setRefreshing] = useState(false);
   const resetFilters = () => {
     setShowFavorites(false);
@@ -202,7 +195,6 @@ export const FittingListScreen = () => {
     resetFilters();
     setTimeout(() => {
       setPage(1);
-      setVisibleData(data.slice(0, PAGE_SIZE));
       setRefreshing(false);
     }, 1000);
   };
@@ -329,6 +321,7 @@ export const FittingListScreen = () => {
     ),
     [syncTempFromMain, hasFilterApplied],
   );
+
   useLayoutEffect(() => {
     if (selectionMode) {
       navigation.setOptions({
@@ -367,15 +360,7 @@ export const FittingListScreen = () => {
 
   return (
     <View style={[styles.container, { padding: 0 }]}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          margin: 12,
-        }}
-      >
+      <View style={styles.headerRow}>
         <DropdownSelect
           label=""
           options={companyOptions}
@@ -398,6 +383,7 @@ export const FittingListScreen = () => {
           />
         </TouchableOpacity>
       </View>
+
       <FlatList
         style={{ paddingHorizontal: 12 }}
         ref={listRef}
@@ -407,21 +393,58 @@ export const FittingListScreen = () => {
         ItemSeparatorComponent={renderSeparator}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
         ListHeaderComponent={<View style={{ height: 8 }} />}
-        ListFooterComponent={
-          loadingMore ? (
-            <ActivityIndicator
-              size="large"
-              color="#007BFF"
-              style={styles.footerLoading}
-            />
-          ) : null
-        }
+        ListFooterComponent={<View style={{ height: 68 }} />}
         refreshing={refreshing}
         onRefresh={onRefresh}
       />
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <View
+          style={[
+            styles.pagination,
+            { justifyContent: 'space-between', paddingHorizontal: 12 },
+          ]}
+        >
+          <DropdownSelect
+            label=""
+            options={['20', '50', '100']}
+            value={String(pageSize)}
+            onChange={val => setPageSize(Number(val))}
+            style={{ width: 80, marginBottom: 0 }}
+          />
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={styles.pageInfo}>
+              ページ {page} / {totalPages}
+            </Text>
+            <TouchableOpacity
+              onPress={goPrevPage}
+              disabled={page === 1}
+              style={[styles.pageBtn, page === 1 && styles.pageBtnDisabled]}
+            >
+              <Text style={styles.pageText}>◀</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={goNextPage}
+              disabled={page === totalPages}
+              style={[
+                styles.pageBtn,
+                page === totalPages && styles.pageBtnDisabled,
+              ]}
+            >
+              <Text style={styles.pageText}>▶</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
       {/* Scroll-to-top FAB */}
       <Animated.View style={[styles.scrollTopBtn, { opacity: fadeAnim }]}>
@@ -434,21 +457,11 @@ export const FittingListScreen = () => {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* ✅ Modal Components tách ra ngoài */}
+      {/* FilterModal */}
       <FilterModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onApply={applyModal}
-        tempShowFavorites={tempShowFavorites}
-        setTempShowFavorites={setTempShowFavorites}
-        tempStatusFilter={tempStatusFilter}
-        setTempStatusFilter={setTempStatusFilter}
-        tempAreaFilter={tempAreaFilter}
-        setTempAreaFilter={setTempAreaFilter}
-        tempBuildingFilter={tempBuildingFilter}
-        setTempBuildingFilter={setTempBuildingFilter}
-        tempFittingTypeFilter={tempFittingTypeFilter}
-        setTempFittingTypeFilter={setTempFittingTypeFilter}
         tempSortField={tempSortField}
         setTempSortField={setTempSortField}
         tempSortOrder={tempSortOrder}
@@ -473,16 +486,6 @@ type FilterModalProps = {
   visible: boolean;
   onClose: () => void;
   onApply: () => void;
-  tempShowFavorites: boolean;
-  setTempShowFavorites: (v: boolean) => void;
-  tempStatusFilter: string;
-  setTempStatusFilter: (v: any) => void;
-  tempAreaFilter: string;
-  setTempAreaFilter: (v: any) => void;
-  tempBuildingFilter: string;
-  setTempBuildingFilter: (v: any) => void;
-  tempFittingTypeFilter: string | number;
-  setTempFittingTypeFilter: (v: any) => void;
   tempSortField: SortField;
   setTempSortField: (v: SortField | null) => void;
   tempSortOrder: SortOrder;
@@ -724,6 +727,13 @@ const styles = StyleSheet.create({
   dangerText: { color: 'red' },
   primaryText: { color: '#007BFF' },
 
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 12,
+  },
+
   // Filter button
   filterBtn: { padding: 8, borderRadius: 6, backgroundColor: '#eee' },
   filterBtnActive: { backgroundColor: '#d1c7aa' },
@@ -731,7 +741,7 @@ const styles = StyleSheet.create({
   // Scroll to top
   scrollTopBtn: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 80,
     right: 20,
     backgroundColor: '#d1c7aa',
     padding: 12,
@@ -739,7 +749,28 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  // Modal common
+  // Pagination
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+  },
+  pageBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginHorizontal: 8,
+    borderRadius: 6,
+    backgroundColor: '#d1c7aa',
+  },
+  pageBtnDisabled: {
+    backgroundColor: '#ccc',
+  },
+  pageText: { color: '#fff', fontWeight: '600' },
+  pageInfo: { fontSize: 16, fontWeight: '600' },
+
+  // Modal
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',

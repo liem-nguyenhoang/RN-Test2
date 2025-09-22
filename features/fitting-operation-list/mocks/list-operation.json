@@ -9,7 +9,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物1号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 2",
@@ -21,7 +21,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物2号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 3",
@@ -33,7 +33,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物3号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 4",
@@ -45,7 +45,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物4号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 5",
@@ -57,7 +57,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物5号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 6",
@@ -69,7 +69,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物6号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 7",
@@ -81,7 +81,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物7号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 8",
@@ -93,7 +93,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物8号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 9",
@@ -105,7 +105,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物9号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 10",
@@ -117,7 +117,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物10号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 11",
@@ -129,7 +129,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物11号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 12",
@@ -141,7 +141,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物12号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 13",
@@ -153,7 +153,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物13号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 14",
@@ -165,7 +165,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物14号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 15",
@@ -177,7 +177,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物15号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 16",
@@ -189,7 +189,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物16号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 17",
@@ -201,7 +201,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物17号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 18",
@@ -213,7 +213,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物18号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 19",
@@ -225,7 +225,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物19号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 20",
@@ -237,7 +237,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物20号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 21",
@@ -249,7 +249,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物21号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 22",
@@ -261,7 +261,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物22号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 23",
@@ -273,7 +273,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物23号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 24",
@@ -285,7 +285,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物24号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 25",
@@ -297,7 +297,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物25号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 26",
@@ -309,7 +309,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物26号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 27",
@@ -321,7 +321,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物27号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 28",
@@ -333,7 +333,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物28号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 29",
@@ -345,7 +345,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物29号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 30",
@@ -357,7 +357,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物30号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 31",
@@ -369,7 +369,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物31号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 32",
@@ -381,7 +381,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物32号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 33",
@@ -393,7 +393,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物33号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 34",
@@ -405,7 +405,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物34号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 35",
@@ -417,7 +417,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物35号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 36",
@@ -429,7 +429,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物36号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 37",
@@ -441,7 +441,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物37号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 38",
@@ -453,7 +453,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物38号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 39",
@@ -465,7 +465,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物39号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 40",
@@ -477,7 +477,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物40号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 41",
@@ -489,7 +489,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物41号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 42",
@@ -501,7 +501,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物42号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 43",
@@ -513,7 +513,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物43号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 44",
@@ -525,7 +525,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物44号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 45",
@@ -537,7 +537,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物45号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 46",
@@ -549,7 +549,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物46号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 47",
@@ -561,7 +561,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物47号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 48",
@@ -573,7 +573,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物48号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 49",
@@ -585,7 +585,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物49号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 50",
@@ -597,7 +597,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物50号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 51",
@@ -609,7 +609,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物51号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 52",
@@ -621,7 +621,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物52号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 53",
@@ -633,7 +633,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物53号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 54",
@@ -645,7 +645,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物54号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 55",
@@ -657,7 +657,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物55号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 56",
@@ -669,7 +669,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物56号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 57",
@@ -681,7 +681,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物57号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 58",
@@ -693,7 +693,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物58号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 59",
@@ -705,7 +705,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物59号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 60",
@@ -717,7 +717,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物60号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 61",
@@ -729,7 +729,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物61号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 62",
@@ -741,7 +741,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物62号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 63",
@@ -753,7 +753,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物63号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 64",
@@ -765,7 +765,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物64号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 65",
@@ -777,7 +777,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物65号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 66",
@@ -789,7 +789,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物66号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 67",
@@ -801,7 +801,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物67号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 68",
@@ -813,7 +813,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物68号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 69",
@@ -825,7 +825,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物69号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 70",
@@ -837,7 +837,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物70号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 71",
@@ -849,7 +849,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物71号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 72",
@@ -861,7 +861,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物72号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 73",
@@ -873,7 +873,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物73号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 74",
@@ -885,7 +885,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物74号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 75",
@@ -897,7 +897,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物75号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 76",
@@ -909,7 +909,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物76号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 77",
@@ -921,7 +921,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物77号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 78",
@@ -933,7 +933,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物78号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 79",
@@ -945,7 +945,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物79号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 80",
@@ -957,7 +957,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物80号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 81",
@@ -969,7 +969,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物81号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 82",
@@ -981,7 +981,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物82号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 83",
@@ -993,7 +993,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物83号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 84",
@@ -1005,7 +1005,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物84号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 85",
@@ -1017,7 +1017,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物85号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 86",
@@ -1029,7 +1029,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物86号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 87",
@@ -1041,7 +1041,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物87号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 88",
@@ -1053,7 +1053,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物88号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 89",
@@ -1065,7 +1065,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物89号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 90",
@@ -1077,7 +1077,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物90号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 91",
@@ -1089,7 +1089,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物91号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 92",
@@ -1101,7 +1101,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物92号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 93",
@@ -1113,7 +1113,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物93号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 94",
@@ -1125,7 +1125,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物94号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 95",
@@ -1137,7 +1137,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物95号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 96",
@@ -1149,7 +1149,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物96号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 97",
@@ -1161,7 +1161,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物97号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 98",
@@ -1173,7 +1173,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物98号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 99",
@@ -1185,7 +1185,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物99号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 100",
@@ -1197,7 +1197,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物100号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 101",
@@ -1209,7 +1209,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物101号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 102",
@@ -1221,7 +1221,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物102号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 103",
@@ -1233,7 +1233,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物103号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 104",
@@ -1245,7 +1245,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物104号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 105",
@@ -1257,7 +1257,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物105号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 106",
@@ -1269,7 +1269,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物106号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 107",
@@ -1281,7 +1281,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物107号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 108",
@@ -1293,7 +1293,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物108号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 109",
@@ -1305,7 +1305,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物109号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 110",
@@ -1317,7 +1317,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物110号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 111",
@@ -1329,7 +1329,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物111号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 112",
@@ -1341,7 +1341,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物112号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 113",
@@ -1353,7 +1353,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物113号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 114",
@@ -1365,7 +1365,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物114号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 115",
@@ -1377,7 +1377,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物115号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 116",
@@ -1389,7 +1389,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物116号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 117",
@@ -1401,7 +1401,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物117号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 118",
@@ -1413,7 +1413,7 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物118号館",
-    "status": "Closing"
+    "status": "4"
   },
   {
     "area": "エリア 119",
@@ -1425,7 +1425,7 @@
     "fittingType": 1,
     "isfavorite": 1,
     "stationBuildingName": "建物119号館",
-    "status": "Opening"
+    "status": "2"
   },
   {
     "area": "エリア 120",
@@ -1437,6 +1437,6 @@
     "fittingType": 2,
     "isfavorite": 0,
     "stationBuildingName": "建物120号館",
-    "status": "Closing"
+    "status": "4"
   }
 ]

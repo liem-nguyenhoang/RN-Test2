@@ -8,5 +8,5 @@ export interface Fitting {
   fittingType: number;
   isfavorite: number;
   stationBuildingName: string;
-  status: string;
+  status: number;
 }

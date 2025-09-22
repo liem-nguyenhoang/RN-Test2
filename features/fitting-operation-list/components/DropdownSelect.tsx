@@ -74,7 +74,7 @@ export function DropdownSelect<T extends string | number>({
               style={styles.closeBtn}
               onPress={() => setVisible(false)}
             >
-              <Text style={styles.closeText}>Cancel</Text>
+              <Text style={styles.closeText}>キャンセル</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#d1c7aa',
     borderRadius: 6,
     paddingVertical: 8,
     paddingHorizontal: 12,
