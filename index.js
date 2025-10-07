@@ -2,6 +2,8 @@
  * @format
  */
 
+import 'reflect-metadata';
+
 import { AppRegistry } from 'react-native';
 // import App from './Nav3';
 // import App from './App';

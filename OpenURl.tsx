@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -7,6 +7,10 @@ import {
   StyleSheet,
   Linking,
 } from 'react-native';
+import { runMigrations } from './src/common/database/migrate';
+import { AppDataSource } from './src/common/database/data-source';
+import { User } from './src/common/entities/User';
+import { Todo } from './src/features/todo/entities/Todo';
 
 /* ==============================
  * Modal component
@@ -22,6 +26,35 @@ const ConfirmOpenLinkModal = ({
   onCancel: () => void;
   onConfirm: () => void;
 }) => {
+  useEffect(() => {
+    const setupDb = async () => {
+      try {
+        await runMigrations();
+
+        const userRepo = AppDataSource.getRepository(User);
+        const todoRepo = AppDataSource.getRepository(Todo);
+
+        // Tạo user demo
+        const user = userRepo.create({
+          name: 'Liem',
+          email: 'liem@example.com',
+        });
+        await userRepo.save(user);
+
+        // Tạo todo demo
+        const todo = todoRepo.create({ title: 'Learn TypeORM', user });
+        await todoRepo.save(todo);
+
+        const todos = await todoRepo.find({ relations: ['user'] });
+        console.log('🧾 TODOS:', todos);
+      } catch (error) {
+        console.error('error:', error);
+      }
+    };
+
+    setupDb();
+  }, []);
+
   return (
     <Modal
       animationType="fade"
