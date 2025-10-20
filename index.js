@@ -8,7 +8,9 @@ import { AppRegistry } from 'react-native';
 // import App from './Nav3';
 // import App from './App';
 // import App from './List1';
-import App from './OpenURl';
+// import App from './OpenURl';
+// import DetailView from './SwipeToConfirm/DetailViewTest1'
+import DetailView from './SwipeToConfirm/DetailViewTest1'
 import { name as appName } from './app.json';
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => DetailView);
