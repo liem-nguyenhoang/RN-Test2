@@ -2,6 +2,27 @@ import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { SlideToConfirm } from './components/overlay/SlideToConfirmOverlay';
 import { useDoorControlStore } from './stores/useDoorControlStore';
+import Config from 'react-native-config';
+
+Config.API_URL; // 'https://myapi.com'
+Config.GOOGLE_MAPS_API_KEY; // 'abcdefgh'
+
+import * as Sentry from '@sentry/react-native';
+import { logDebug, logError, logInfo, logWarn } from '../logger/logger';
+import { useNavigation } from '@react-navigation/native';
+Sentry.init({
+  dsn: 'https://9a513dbf5edec2ff6f0c66fa6be33970@o4510233943277568.ingest.us.sentry.io/4510233944653824',
+  environment: 'staging',
+  // enableAutoSessionTracking: true,
+  // debug: Config.ENV === 'staging',
+  // debug: true,
+  // tracesSampleRate: 1.0,
+  enableLogs: true,
+  // beforeSend(event) {
+  //   if (__DEV__) return null;
+  //   return event;
+  // },
+});
 
 export const DoorControlScreen = () => {
   const { activeAction, setActiveAction, showActionModal, setShowActionModal } =
@@ -29,7 +50,17 @@ export const DoorControlScreen = () => {
       <Button
         title="Open"
         color="#43a047"
-        onPress={() => handleOpenModal('open')}
+        // onPress={() => handleOpenModal('open')}
+        onPress={() => {
+          try {
+            logInfo('Log Info');
+            logWarn('Log Warring');
+            logDebug('Log debug');
+            useNavigation().dispatch(() => {});
+          } catch (error) {
+            logError(error.message, { error });
+          }
+        }}
       />
       <View style={styles.spacing} />
       <Button

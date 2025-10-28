@@ -37,6 +37,21 @@ import { FittingItem } from './features/fitting-operation-list/components/Fittin
 import { DropdownSelect } from './features/fitting-operation-list/components/DropdownSelect';
 import data from './features/fitting-operation-list/mocks/list-operation.json';
 import { Fitting } from './features/fitting-operation-list/types/fitting';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://9a513dbf5edec2ff6f0c66fa6be33970@o4510233943277568.ingest.us.sentry.io/4510233944653824',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 const { width, height } = Dimensions.get('window');
 
@@ -846,7 +861,7 @@ const Drawer = createDrawerNavigator({
 });
 const Navigation = createStaticNavigation(Drawer);
 
-export default function App() {
+export default Sentry.wrap(function App() {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <>
@@ -855,4 +870,4 @@ export default function App() {
       <Toast />
     </>
   );
-}
+});
